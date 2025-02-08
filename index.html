@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hayes Auto Repair & Body Shop</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.postimg.cc/Z5XC9snM/image.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            flex-direction: column; /* Mobilnézetben egymás alatt */
+            align-items: center; /* Középre igazítás */
+        }
+
+        nav ul li {
+            margin: 10px 0; /* Távolság a menüpontok között */
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #61a1ee;
+            transition: color 0.3s ease-in-out;
+        }
+
+        nav ul li a.active {
+            color: #61a1ee;
+        }
+
+        @media (min-width: 768px) {
+            nav ul {
+                flex-direction: row; /* Nagyobb képernyőkön egymás mellett */
+            }
+
+            nav ul li {
+                margin: 0 15px; /* Távolság a menüpontok között */
+            }
+        }
+
+        main {
+            flex: 1;
+            width: 90%; /* Szélesség mobilon */
+            max-width: 1200px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        section.active {
+            display: block;
+            opacity: 1;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h1 {
+            font-size: 2rem; /* Kisebb méret mobilon */
+            margin-bottom: 20px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        p {
+            font-size: 1rem; /* Kisebb méret mobilon */
+            line-height: 1.6;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .service-list, .job-list {
+            text-align: left;
+            display: inline-block;
+            margin: 20px 0;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .service-list li, .job-list li {
+            margin: 10px 0;
+        }
+
+        @media (min-width: 768px) {
+            h1 {
+                font-size: 2.5rem; /* Nagyobb méret asztali nézetben */
+            }
+
+            p {
+                font-size: 1.2rem; /* Nagyobb méret asztali nézetben */
+            }
+        }
+
+        /* Modal stílusok */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 10px; /* Kisebb padding mobilon */
+            border-radius: 10px;
+            color: black;
+            text-align: center;
+            width: 95%; /* Szélesség mobilon */
+            max-width: 400px;
+            transform: scale(0.8);
+            opacity: 0;
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .modal-content input,
+        .modal-content textarea {
+            padding: 10px;
+            margin: 10px 0;
+            width: 90%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal-content textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .modal-content button {
+            padding: 10px 20px;
+            background: #61a1ee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .modal-content button:hover {
+            background: #4a8cd6;
+        }
+
+        @media (min-width: 768px) {
+            .modal-content {
+                padding: 20px; /* Nagyobb padding asztali nézetben */
+            }
+        }
+
+        /* Hívj szerelőt gomb */
+        .call-button {
+            position: fixed;
+            bottom: 10px; /* Kisebb távolság az aljától mobilon */
+            right: 10px; /* Kisebb távolság a jobb széltől mobilon */
+            padding: 10px 20px; /* Kisebb padding mobilon */
+            background: #cf339e;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px; /* Kisebb méret mobilon */
+            animation: bounce 2s infinite;
+        }
+
+        .call-button:hover {
+            background: #b12a8a;
+        }
+
+        @media (min-width: 768px) {
+            .call-button {
+                font-size: 18px; /* Nagyobb méret asztali nézetben */
+                padding: 15px 30px; /* Nagyobb padding asztali nézetben */
+                bottom: 20px; /* Normál távolság az aljától */
+                right: 20px; /* Normál távolság a jobb széltől */
+            }
+        }
+
+        /* Jelentkezés gomb */
+        .apply-button {
+            padding: 10px 20px; /* Kisebb padding mobilon */
+            background: #61a1ee;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px; /* Kisebb méret mobilon */
+            margin-top: 20px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .apply-button:hover {
+            background: #4a8cd6;
+        }
+
+        @media (min-width: 768px) {
+            .apply-button {
+                font-size: 18px; /* Nagyobb méret asztali nézetben */
+                padding: 15px 30px; /* Nagyobb padding asztali nézetben */
+            }
+        }
+
+        /* Animációk */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home" data-target="home">Kezdőlap</a></li>
+                <li><a href="#services" data-target="services">Szolgáltatások</a></li>
+                <li><a href="#careers" data-target="careers">Álláslehetőségek</a></li>
+                <li><a href="#contact" data-target="contact">Kapcsolat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Kezdőlap -->
+        <section id="home" class="active">
+            <h1>Üdvözöljük a Hayes Auto Repair & Body Shop-nál!</h1>
+            <p>Autója megbízható kezekben van! Cégünk több mint 20 éve nyújt kiváló minőségű autószerviz és karosszéria javítási szolgáltatásokat. Legyen szó kisebb javításról vagy komolyabb baleseti helyreállításról, nálunk mindent megoldunk!</p>
+            <img src="https://i.postimg.cc/1tYvqNnB/11zon-resized.png" alt="Autószerviz műhely">
+        </section>
+
+        <!-- Szolgáltatások -->
+        <section id="services" class="hidden">
+            <h1>Szolgáltatásaink</h1>
+            <p>Széleskörű szolgáltatásokat kínálunk, hogy autója mindig tökéletes állapotban legyen. Az alábbiakban megtalálja, miben segíthetünk:</p>
+            <ul class="service-list">
+                <li>✔️ Motorhibák diagnosztizálása és javítása</li>
+                <li>✔️ Karosszéria javítás és festés</li>
+                <li>✔️ Fékrendszer ellenőrzés és javítás</li>
+                <li>✔️ Futómű beállítás és javítás</li>
+                <li>✔️ Klímaszerviz és légkondicionáló rendszer javítás</li>
+                <li>✔️ Baleseti helyreállítás</li>
+            </ul>
+            <img src="https://source.unsplash.com/800x400/?car,repair" alt="Szolgáltatások kép">
+        </section>
+
+        <!-- Álláslehetőségek -->
+        <section id="careers" class="hidden">
+            <h1>Álláslehetőségek</h1>
+            <p>Ha szeretne csatlakozni csapatunkhoz, nézze meg nyitott pozícióinkat! Folyamatosan keresünk lelkes és szakmailag felkészült munkatársakat.</p>
+            <ul class="job-list">
+                <li>🚗 Autószerelő (tapasztalat szükséges)</li>
+                <li>🎨 Karosszéria lakatos (kezdők is jelentkezhetnek)</li>
+                <li>🔧 Diagnosztikai szakember</li>
+                <li>👨‍💼 Ügyfélszolgálati munkatárs</li>
+            </ul>
+            <button class="apply-button" onclick="openApplyModal()">Jelentkezem</button>
+            <img src="https://i.postimg.cc/bv7TyR1x/image-11zon.png" alt="Álláslehetőségek kép">
+        </section>
+
+        <!-- Kapcsolat -->
+        <section id="contact" class="hidden">
+            <h1>Kapcsolat</h1>
+            <p>Keressen minket bátran, csapatunk mindig szívesen áll rendelkezésére!</p>
+            <p><strong>Cím:</strong> 1234 Autószerviz utca, Budapest, Magyarország</p>
+            <p><strong>Telefon:</strong> +36 1 234 5678</p>
+            <p><strong>E-mail:</strong> info@hayesautorepair.com</p>
+            <p><strong>Nyitvatartás:</strong> Hétfő-Péntek: 8:00 - 18:00, Szombat: 9:00 - 14:00</p>
+            <img src="https://i.postimg.cc/brt9SVjY/N-vtelen-terv-1.png" alt="Kapcsolat kép">
+        </section>
+    </main>
+
+    <!-- Hívj szerelőt gomb -->
+    <button class="call-button" onclick="openModal()">Hívj szerelőt!</button>
+
+    <!-- Modal ablak (Hívj szerelőt) -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h2>Adja meg az adatait</h2>
+            <input type="text" id="name" placeholder="Név" required>
+            <input type="text" id="phone" placeholder="Telefonszám" required>
+            <input type="text" id="zipCode" placeholder="Irányítószám" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <textarea id="description" placeholder="Rövid leírás a problémáról" required></textarea>
+            <button onclick="sendRequest()">Küldés</button>
+            <button onclick="closeModal()" style="background: #ccc; color: black;">Mégse</button>
+        </div>
+    </div>
+
+    <!-- Modal ablak (Jelentkezés) -->
+    <div id="applyModal" class="modal">
+        <div class="modal-content">
+            <h2>Jelentkezés</h2>
+            <input type="text" id="applyName" placeholder="Név" required>
+            <input type="text" id="applyPhone" placeholder="Telefonszám" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <input type="text" id="applyEmail" placeholder="Email ((Discord felhasználónév))" required>
+            <input type="text" id="applyAge" placeholder="Életkor" required oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+            <textarea id="applyIntro" placeholder="Rövid bemutatkozás" required></textarea>
+            <button onclick="sendApplication()">Küldés</button>
+            <button onclick="closeApplyModal()" style="background: #ccc; color: black;">Mégse</button>
+        </div>
+    </div>
+
+    <script>
+        // Modal kezelése (Hívj szerelőt)
+        const modal = document.getElementById("modal");
+
+        function openModal() {
+            modal.classList.add("active");
+        }
+
+        function closeModal() {
+            modal.classList.remove("active");
+        }
+
+        // Modal kezelése (Jelentkezés)
+        const applyModal = document.getElementById("applyModal");
+
+        function openApplyModal() {
+            applyModal.classList.add("active");
+        }
+
+        function closeApplyModal() {
+            applyModal.classList.remove("active");
+        }
+
+        // Adatok küldése Discord webhook segítségével (Hívj szerelőt)
+        async function sendRequest() {
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const zipCode = document.getElementById("zipCode").value;
+            const description = document.getElementById("description").value;
+
+            if (!name || !phone || !zipCode || !description) {
+                alert("Kérjük, töltse ki az összes mezőt!");
+                return;
+            }
+
+            const webhookURL = "https://discord.com/api/webhooks/1337867597357514913/jj0O2mz28Uvas1iFP0zaRGZk-VlvrLxk2-Cwaz43cQcqK5tq4AoEF6M1sO4ECpUcOZXL"; // Cseréld ki a saját Discord webhook URL-edre
+            const message = {
+                username: "Diszpécser", // A webhook neve
+                content: `@everyone\n**Új hívás érkezett!**\n\n**Név:** ${name}\n**Telefonszám:** ${phone}\n**Irányítószám:** ${zipCode}\n**Leírás:** ${description}\n\nHa szeretnéd elfogadni a hívást, reagálj erre az értesítésre, majd vedd fel a kapcsolatot az ügyféllel.`,
+            };
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(message),
+                });
+
+                if (response.ok) {
+                    alert("Kérés elküldve! Hamarosan felvesszük Önnel a kapcsolatot.");
+                    closeModal();
+                } else {
+                    alert("Hiba történt a kérés küldése közben. Kérjük, próbálja újra később.");
+                }
+            } catch (error) {
+                console.error("Hiba:", error);
+                alert("Hiba történt a kérés küldése közben.");
+            }
+        }
+
+        // Adatok küldése Discord webhook segítségével (Jelentkezés)
+        async function sendApplication() {
+            const name = document.getElementById("applyName").value;
+            const phone = document.getElementById("applyPhone").value;
+            const email = document.getElementById("applyEmail").value;
+            const age = document.getElementById("applyAge").value;
+            const intro = document.getElementById("applyIntro").value;
+
+            if (!name || !phone || !email || !age || !intro) {
+                alert("Kérjük, töltse ki az összes mezőt!");
+                return;
+            }
+
+            const webhookURL = "https://discord.com/api/webhooks/1337861320556679228/WQZqpy9G8GOD6X4gbqG3agPmZel4tEQGVKLxBg-ebTuhMY4APfXS9TtsjHCIV4nXxp-E"; // Cseréld ki a saját Discord webhook URL-edre
+            const message = {
+                username: "Titkárnő", // A webhook neve
+                content: `@everyone\n**Új jelentkezés érkezett!**\n\n**Név:** ${name}\n**Telefonszám:** ${phone}\n**Discord:** ${email}\n**Életkor:** ${age}\n**Bemutatkozás:** ${intro}`,
+            };
+
+            try {
+                const response = await fetch(webhookURL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(message),
+                });
+
+                if (response.ok) {
+                    alert("Jelentkezését megkaptuk! Hamarosan felvesszük önnel a kapcsolatot!");
+                    closeApplyModal();
+                } else {
+                    alert("Hiba történt a jelentkezés küldése közben. Kérjük, próbálja újra később.");
+                }
+            } catch (error) {
+                console.error("Hiba:", error);
+                alert("Hiba történt a jelentkezés küldése közben.");
+            }
+        }
+
+        // Szekciók váltása
+        document.addEventListener("DOMContentLoaded", function() {
+            const sections = document.querySelectorAll("section");
+            const navLinks = document.querySelectorAll("nav ul li a");
+
+            // Alapértelmezettként a kezdőlap megjelenítése
+            document.querySelector("#home").classList.add("active");
+            document.querySelector('a[data-target="home"]').classList.add("active");
+
+            navLinks.forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    const targetId = this.getAttribute("data-target");
+
+                    // Minden szekció elrejtése
+                    sections.forEach(section => {
+                        section.classList.remove("active");
+                        section.classList.add("hidden");
+                    });
+
+                    // Minden fül eltávolítása az active osztályból
+                    navLinks.forEach(link => {
+                        link.classList.remove("active");
+                    });
+
+                    // A kiválasztott szekció megjelenítése
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.classList.remove("hidden");
+                        targetSection.classList.add("active");
+                    }
+
+                    // A kiválasztott fül kék színűre állítása
+                    this.classList.add("active");
+                });
+            });
+        });
+    </script>
+</body>
+</html>
